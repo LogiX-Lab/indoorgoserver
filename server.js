@@ -42,6 +42,10 @@ app.get('/maps/list', (req, res) => {
   }
 });
 
+// Serve static files from the 'static' directory first
+// example: template/data/*.json
+app.use(express.static(path.join(__dirname, 'static')));
+
 // Serve static files only for image files, not JSON API routes
 app.use('/maps', (req, res, next) => {
   if (req.path.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
@@ -82,9 +86,7 @@ app.get('/maps/:mapId', (req, res) => {
   res.send(mapJson);
 });
 
-// Serve static files from the 'static' directory
-// example: template/data/*.json
-app.use(express.static(path.join(__dirname, 'static')));
+
 
 app.post('/maps/:mapId/units', (req, res) => {
   const mapId = req.params.mapId;
