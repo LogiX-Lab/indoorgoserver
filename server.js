@@ -20,7 +20,7 @@ app.use((req, res, next) => {
   next();
 });
 
-const DATA_DIR = process.env.NODE_ENV === 'production' ? '/tmp/data' : path.join(process.cwd(), 'template/data');
+const DATA_DIR = process.env.NODE_ENV === 'production' ? '/tmp/data' : path.join(process.cwd(), 'static/template/data');
 
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
@@ -81,6 +81,10 @@ app.get('/maps/:mapId', (req, res) => {
   const mapJson = JSON.parse(fs.readFileSync(jsonPath));
   res.send(mapJson);
 });
+
+// Serve static files from the 'static' directory
+// example: template/data/*.json
+app.use(express.static(path.join(__dirname, 'static')));
 
 app.post('/maps/:mapId/units', (req, res) => {
   const mapId = req.params.mapId;
