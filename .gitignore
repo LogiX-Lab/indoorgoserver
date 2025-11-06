@@ -1,6 +1,5 @@
 node_modules/
 uploads/
-data/
 *.log
 .DS_Store
 package-lock.json
