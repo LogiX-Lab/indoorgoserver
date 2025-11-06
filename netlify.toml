@@ -5,7 +5,7 @@
 [functions]
   node_bundler = "esbuild"
   included_files = [
-    "static/**/**"  # Include all files in static for server-side access
+    "static/*/**"  # Include all files in static for server-side access
   ] 
 [dev]
   port = 4000
