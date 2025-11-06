@@ -6,3 +6,6 @@ package-lock.json
 dist/
 build/
 .vscode/
+
+# Local Netlify folder
+.netlify

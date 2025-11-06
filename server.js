@@ -1,5 +1,4 @@
 require('dotenv').config();
-require('dotenv').config();
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
@@ -13,10 +12,26 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json({ limit: '10mb' }));
 
-const DATA_DIR = process.env.NODE_ENV === 'production' ? '/tmp/data' : path.join(__dirname, 'data');
+app.use((req, res, next) => {
+  if (req.query.path) {
+    req.url = '/' + req.query.path;
+    req.path = '/' + req.query.path;
+  }
+  next();
+});
+
+const DATA_DIR = process.env.NODE_ENV === 'production' ? '/tmp/data' : path.join(process.cwd(), 'data');
+
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
-app.use('/maps', express.static(DATA_DIR));
+// Serve static files only for image files, not JSON API routes
+app.use('/maps', (req, res, next) => {
+  if (req.path.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+    express.static(DATA_DIR)(req, res, next);
+  } else {
+    next();
+  }
+});
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, DATA_DIR),
@@ -92,6 +107,14 @@ app.post('/maps/:mapId/route', (req, res) => {
   const routePath = orderedIdx.map(i => ({ id: points[i].id, x: points[i].x, y: points[i].y }));
 
   res.send({ route: ordered, length, path: routePath });
+});
+
+app.get('/', (req, res) => {
+  res.send({ message: 'Mall Route API Server', status: 'running' });
+});
+
+app.get('*', (req, res) => {
+  res.status(404).send({ error: 'Route not found', path: req.path, url: req.url });
 });
 
 if (require.main === module) {
