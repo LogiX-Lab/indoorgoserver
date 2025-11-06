@@ -42,8 +42,14 @@ app.get('/maps/list', (req, res) => {
   }
 });
 
-// Serve static files from the 'static' directory first
+// Serve static files from the 'static' directory first with CORS headers
 // example: template/data/*.json
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  next();
+});
 app.use(express.static(path.join(__dirname, 'static')));
 
 // Serve static files only for image files, not JSON API routes
