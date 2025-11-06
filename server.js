@@ -24,6 +24,24 @@ const DATA_DIR = process.env.NODE_ENV === 'production' ? '/tmp/data' : path.join
 
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, DATA_DIR),
+  filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
+});
+const upload = multer({ storage });
+
+app.get('/maps/list', (req, res) => {
+  try {
+    const files = fs.readdirSync(DATA_DIR);
+    const mapIds = files
+      .filter(file => file.endsWith('.json'))
+      .map(file => file.replace('.json', ''));
+    res.send({ maps: mapIds });
+  } catch (error) {
+    res.status(500).send({ error: 'Failed to read maps directory' });
+  }
+});
+
 // Serve static files only for image files, not JSON API routes
 app.use('/maps', (req, res, next) => {
   if (req.path.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
@@ -32,12 +50,6 @@ app.use('/maps', (req, res, next) => {
     next();
   }
 });
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, DATA_DIR),
-  filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
-});
-const upload = multer({ storage });
 
 app.post('/maps', upload.single('map'), async (req, res) => {
   const file = req.file;
