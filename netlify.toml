@@ -3,7 +3,7 @@
   publish = "static"  # Static assets to be served by Netlify's CDN. Folder defaults to public
 
 [functions]
-  # node_bundler = "esbuild"
+  node_bundler = "esbuild"
   included_files = [
     "static/**/**"  # Include all files in static for server-side access
   ] 
