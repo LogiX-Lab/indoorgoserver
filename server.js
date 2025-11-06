@@ -120,6 +120,8 @@ app.post('/maps/:mapId/route', (req, res) => {
   res.send({ route: ordered, length, path: routePath });
 });
 
+require('dotenv').config();
+
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Server running on ${PORT}`));
 
