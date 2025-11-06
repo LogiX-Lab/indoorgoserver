@@ -4,6 +4,9 @@
 [functions]
   node_bundler = "esbuild"
 
+[dev]
+  port = 4000
+
 [[redirects]]
   from = "/maps/*"
   to = "/.netlify/functions/server?path=maps/:splat"
