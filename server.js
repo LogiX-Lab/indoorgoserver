@@ -20,7 +20,9 @@ app.use((req, res, next) => {
   next();
 });
 
-const DATA_DIR = process.env.NODE_ENV === 'production' ? '/tmp/data' : path.join(process.cwd(), 'static/template/data');
+const DATA_DIR = process.env.NODE_ENV === 'production' ? '/tmp/data' : path.join(process.cwd(), '/data');
+
+console.log('Working Data directory:', DATA_DIR);
 
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
